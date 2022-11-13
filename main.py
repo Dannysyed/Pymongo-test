@@ -2,6 +2,7 @@ from fastapi import Depends, FastAPI, Response, status
 from fastapi.security import HTTPBearer
 from utils import VerifyToken
 import http.client
+from db.connect import collections
 app = FastAPI()    
 token_auth_bearer=HTTPBearer()
 note_data=[]
@@ -36,7 +37,7 @@ def AddNote(name,todo,token:str=Depends(token_auth_bearer)):
     print(token.credentials)
     print(name,todo)
     user_data={"name":name,"todo":todo}
-    # collections.insert_one(user_data)
+    collections.insert_one(user_data)
     # mongo add data command
     note_data.append(user_data)
     print(note_data)
