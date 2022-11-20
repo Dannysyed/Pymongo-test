@@ -56,13 +56,18 @@ def AddNote(name,todo,token:str=Depends(token_auth_bearer)):
        return result
    
     print(token.credentials)
-    # print(name,todo)
+    # adding the data
     user_data={"id":random_id,"name":name,"todo":todo}
     collections.insert_one(user_data)
     # mongo add data command
     note_data.append(user_data)
-    # print(note_data)
-    return {"msg":"Succesffully added in list"} 
+    # showind current data
+    coll=[]
+    datad=collections.find({},{"_id":0})
+    for data in datad:
+        coll.append(data)
+    print(coll)
+    return {"msg":"Succesffully added in list",'newdata':coll} 
 
 
 @app.get('/all_notes')
@@ -87,5 +92,11 @@ def DeleteNote(idd):
     find_data=collections.find_one({'id':int(idd)},{'_id':0})
     collections.delete_one(find_data)
     print(find_data)
-    return{'data':"Deleted Succesfully"}
+     # showind current data
+    coll=[]
+    datad=collections.find({},{"_id":0})
+    for data in datad:
+        coll.append(data)
+    print(coll)
+    return{'data':"Deleted Succesfully","new-data":coll}
         
