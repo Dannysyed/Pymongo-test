@@ -1,9 +1,27 @@
 from fastapi import Depends, FastAPI, Response, status 
 from fastapi.security import HTTPBearer
+from fastapi.middleware.cors import CORSMiddleware
 from utils import VerifyToken
 import http.client
 from db.connect import collections
 app = FastAPI()    
+
+origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://localhost:8080",
+    "*",
+    "http://localhost:19006"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+) 
 token_auth_bearer=HTTPBearer()
 note_data=[]
 @app.get("/")
