@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from utils import VerifyToken
 import http.client
 from db.connect import collections
+from random import randint
 app = FastAPI()    
 
 origins = [
@@ -47,16 +48,44 @@ def login():
 
 @app.post("/add_note")
 def AddNote(name,todo,token:str=Depends(token_auth_bearer)):
+    random_id=randint(1,10000000000)
+    print(random_id)
     result = VerifyToken(token.credentials).verify()
     if result.get("status"):
        Response.status_code = status.HTTP_400_BAD_REQUEST
        return result
    
     print(token.credentials)
-    print(name,todo)
-    user_data={"name":name,"todo":todo}
+    # print(name,todo)
+    user_data={"id":random_id,"name":name,"todo":todo}
     collections.insert_one(user_data)
     # mongo add data command
     note_data.append(user_data)
-    print(note_data)
-    return {"msg":"Succesffully added in list"}  
+    # print(note_data)
+    return {"msg":"Succesffully added in list"} 
+
+
+@app.get('/all_notes')
+def AllNotes():
+    random_id=randint(1,10000000000)
+    print(random_id)
+    datad=collections.find({},{"_id":0})
+    coll=[]
+    for data in datad:
+        coll.append(data)
+    print(coll)
+    return{'data':coll}
+
+@app.get('/get_note/{idd}')
+def GetNote(idd):
+    find_data=collections.find_one({'id':int(idd)},{'_id':0})
+    return{'data':find_data}
+ 
+@app.post('/delete_note/{idd}')
+def DeleteNote(idd):
+    print(idd)
+    find_data=collections.find_one({'id':int(idd)},{'_id':0})
+    collections.delete_one(find_data)
+    print(find_data)
+    return{'data':"Deleted Succesfully"}
+        
