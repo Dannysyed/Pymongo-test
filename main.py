@@ -98,5 +98,5 @@ def DeleteNote(idd):
     for data in datad:
         coll.append(data)
     print(coll)
-    return{'data':"Deleted Succesfully","new-data":coll}
+    return{'data':"Deleted Succesfully","newdata":coll}
         
